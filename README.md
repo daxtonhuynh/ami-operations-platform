@@ -6,6 +6,8 @@
 Its sales, academic, HR, finance and admin processes first ran on a zero-cost system of five linked Excel/SharePoint workbooks:
 **lead → placement test → enrolment → class → receipt → payroll → expense → P&L (cash and accrual)**.
 
+Case studies: [Phase 1 · Excel system](https://daxtonhuynh.github.io/business-projects/ami-operations/) · [Phase 2 · Operations platform](https://daxtonhuynh.github.io/business-projects/ami-operations-platform/)
+
 This repository is **phase 2 of the AMI Operational System**: it takes that system to the next level in three layers:
 
 | Layer | What it is | Start here |
