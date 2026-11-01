@@ -1,0 +1,100 @@
+erDiagram
+    academic_room {
+        smallint room_id PK
+        text room_name UK
+        smallint capacity
+        boolean is_online
+        boolean is_hybrid
+    }
+    academic_class {
+        bigint class_id PK,UK
+        text class_code UK
+        smallint course_id FK,UK
+        text delivery_mode_code FK
+        smallint batch_no
+        date start_date
+        date planned_end_date
+        date actual_end_date
+        numeric total_hours
+        numeric hours_per_session
+        smallint sessions_per_week
+        smallint total_sessions
+        numeric total_weeks
+        smallint capacity
+        smallint room_id FK
+        text lifecycle_status
+    }
+    academic_class_meeting_pattern {
+        bigint class_id PK,FK
+        weekday weekday PK
+        time start_time PK
+        time end_time
+    }
+    academic_class_staff_assignment {
+        bigint assignment_id PK
+        bigint class_id FK,UK
+        bigint employee_role_id FK,UK
+        text assignment_role
+        date effective_from UK
+        date effective_to
+    }
+    academic_class_session {
+        bigint session_id PK
+        bigint class_id FK,UK
+        smallint session_no UK
+        date session_date
+        time start_time
+        time end_time
+        numeric planned_hours
+        text status
+        smallint room_id FK
+    }
+    academic_session_staff {
+        bigint session_id PK,FK
+        bigint employee_role_id PK,FK
+        numeric hours
+        bigint confirmed_by FK
+        timestamptz confirmed_at
+    }
+    academic_attendance {
+        bigint session_id PK,FK
+        bigint enrollment_id PK,FK
+        text status
+    }
+    academic_course_lesson {
+        smallint course_id PK,FK
+        smallint lesson_no PK
+        text skill_focus
+        text topic
+    }
+    academic_learning_resource {
+        integer resource_id PK
+        text programme_code FK
+        text topic
+        text subtopic
+        text resource_type
+        text title
+        text url
+    }
+    ref_course {
+        smallint course_id PK
+    }
+    hr_employee_role {
+        bigint employee_role_id PK
+    }
+    billing_enrollment {
+        bigint enrollment_id PK
+    }
+    billing_enrollment ||--o{ academic_attendance : "enrollment_id"
+    academic_class_session ||--o{ academic_attendance : "session_id"
+    ref_course ||--o{ academic_class : "course_id"
+    academic_room |o--o{ academic_class : "room_id"
+    academic_class ||--o{ academic_class_meeting_pattern : "class_id"
+    academic_class ||--o{ academic_class_session : "class_id"
+    academic_room |o--o{ academic_class_session : "room_id"
+    academic_class ||--o{ academic_class_staff_assignment : "class_id"
+    hr_employee_role ||--o{ academic_class_staff_assignment : "employee_role_id"
+    ref_course ||--o{ academic_course_lesson : "course_id"
+    hr_employee_role ||--o{ academic_session_staff : "employee_role_id"
+    academic_class_session ||--o{ academic_session_staff : "session_id"
+    academic_class |o--o{ billing_enrollment : "class_id, course_id"

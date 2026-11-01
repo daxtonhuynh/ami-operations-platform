@@ -1,0 +1,200 @@
+erDiagram
+    hr_employee {
+        bigint employee_id PK
+        text employee_code UK
+        text full_name
+        text name_code UK
+        text gender
+        date date_of_birth
+        text phone
+        text email
+        text employment_type
+        text home_cost_center_code FK
+        date hire_date
+        date end_date
+    }
+    hr_employee_role {
+        bigint employee_role_id PK
+        text hr_code UK
+        bigint employee_id FK
+        text role_code FK
+        text contract_stage_code FK
+        text salary_code FK
+        text cost_center_code FK
+        date effective_from
+        date effective_to
+    }
+    hr_employee_rate_override {
+        bigint override_id PK
+        bigint employee_role_id FK
+        money_vnd_pos hourly_rate
+        date effective_from
+        date effective_to
+        text reason
+        bigint approved_by FK
+    }
+    hr_employee_fixed_pay {
+        bigint fixed_pay_id PK
+        bigint employee_role_id FK
+        money_vnd_pos monthly_amount
+        date effective_from
+        date effective_to
+    }
+    hr_work_shift {
+        bigint shift_id PK
+        bigint employee_role_id FK,UK
+        date shift_date UK
+        time start_time UK
+        time end_time
+        numeric hours
+        numeric deduction_hours
+        text status
+        bigint confirmed_by FK
+        timestamptz confirmed_at
+    }
+    ref_staff_role {
+        text role_code PK
+        text name
+        text pay_basis
+        boolean is_academic
+        text hr_code_suffix
+    }
+    ref_contract_stage {
+        text contract_stage_code PK
+        text name
+    }
+    ref_salary_code {
+        text salary_code PK,UK
+        text role_code FK,UK
+        text contract_stage_code FK,UK
+    }
+    ref_salary_rate {
+        integer salary_rate_id PK
+        text salary_code FK
+        money_vnd_pos hourly_rate
+        date effective_from
+        date effective_to
+    }
+    ref_earning_type {
+        text earning_type_code PK
+        text name
+        boolean is_taxable
+        boolean is_allowance
+    }
+    ref_deduction_type {
+        text deduction_type_code PK
+        text name
+    }
+    payroll_pit_rule {
+        integer pit_rule_id PK
+        text employment_type
+        money_vnd_pos threshold_amount
+        pct rate
+        date effective_from
+        date effective_to
+    }
+    payroll_statutory_deduction_rule {
+        integer rule_id PK
+        text deduction_type_code FK
+        text employment_type
+        pct employee_rate
+        date effective_from
+        date effective_to
+    }
+    payroll_payroll_run {
+        bigint run_id PK
+        integer period_id FK,UK
+        text run_type UK
+        text status
+        timestamptz calculated_at
+        bigint approved_by FK
+        timestamptz approved_at
+        date paid_on
+    }
+    payroll_payroll_line {
+        bigint payroll_line_id PK
+        bigint run_id FK
+        bigint employee_id FK
+        bigint employee_role_id FK
+        text earning_type_code FK
+        text programme_code FK
+        text delivery_mode_code FK
+        numeric quantity_hours
+        money_vnd_pos rate
+        money_vnd amount
+        text source_type
+        text account_code FK
+        text cost_center_code FK
+    }
+    payroll_commission {
+        bigint commission_id PK
+        bigint enrollment_id FK,UK
+        bigint employee_id FK
+        money_vnd_pos amount
+        integer earned_period_id FK
+        text status
+        bigint run_id FK
+    }
+    payroll_payslip {
+        bigint payslip_id PK
+        bigint run_id FK,UK
+        bigint employee_id FK,UK
+        money_vnd_pos taxable_earnings
+        money_vnd_pos allowances
+        money_vnd_pos pit_withheld
+        money_vnd_pos other_deductions
+        money_vnd_pos net_pay
+    }
+    payroll_payslip_deduction {
+        bigint payslip_id PK,FK
+        text deduction_type_code PK,FK
+        money_vnd_pos amount
+    }
+    academic_session_staff {
+        bigint session_id PK,FK
+        bigint employee_role_id PK,FK
+    }
+    billing_enrollment {
+        bigint enrollment_id PK
+    }
+    finance_fiscal_period {
+        integer period_id PK
+    }
+    finance_gl_account {
+        text account_code PK
+    }
+    finance_cost_center {
+        text cost_center_code PK
+    }
+    hr_employee_role ||--o{ academic_session_staff : "employee_role_id"
+    hr_employee |o--o{ billing_enrollment : "class_assigned_by"
+    hr_employee |o--o{ billing_enrollment : "sales_owner_employee_id"
+    hr_employee |o--o{ finance_cost_center : "manager_employee_id"
+    finance_cost_center |o--o{ hr_employee : "home_cost_center_code"
+    hr_employee_role ||--o{ hr_employee_fixed_pay : "employee_role_id"
+    hr_employee_role ||--o{ hr_employee_rate_override : "employee_role_id"
+    ref_contract_stage ||--o{ hr_employee_role : "contract_stage_code"
+    finance_cost_center |o--o{ hr_employee_role : "cost_center_code"
+    hr_employee ||--o{ hr_employee_role : "employee_id"
+    ref_staff_role ||--o{ hr_employee_role : "role_code"
+    ref_salary_code |o--o{ hr_employee_role : "salary_code, role_code, contract_stage_code"
+    hr_employee_role ||--o{ hr_work_shift : "employee_role_id"
+    finance_fiscal_period ||--o{ payroll_commission : "earned_period_id"
+    hr_employee ||--o{ payroll_commission : "employee_id"
+    billing_enrollment ||--o| payroll_commission : "enrollment_id"
+    payroll_payroll_run |o--o{ payroll_commission : "run_id"
+    finance_gl_account ||--o{ payroll_payroll_line : "account_code"
+    finance_cost_center ||--o{ payroll_payroll_line : "cost_center_code"
+    ref_earning_type ||--o{ payroll_payroll_line : "earning_type_code"
+    hr_employee ||--o{ payroll_payroll_line : "employee_id"
+    hr_employee_role |o--o{ payroll_payroll_line : "employee_role_id"
+    payroll_payroll_run ||--o{ payroll_payroll_line : "run_id"
+    finance_fiscal_period ||--o{ payroll_payroll_run : "period_id"
+    hr_employee ||--o{ payroll_payslip : "employee_id"
+    payroll_payroll_run ||--o{ payroll_payslip : "run_id"
+    ref_deduction_type ||--o{ payroll_payslip_deduction : "deduction_type_code"
+    payroll_payslip ||--o{ payroll_payslip_deduction : "payslip_id"
+    ref_deduction_type ||--o{ payroll_statutory_deduction_rule : "deduction_type_code"
+    ref_contract_stage ||--o{ ref_salary_code : "contract_stage_code"
+    ref_staff_role ||--o{ ref_salary_code : "role_code"
+    ref_salary_code ||--o{ ref_salary_rate : "salary_code"

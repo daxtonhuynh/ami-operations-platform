@@ -1,0 +1,4 @@
+*.xlsx binary
+*.png binary
+*.ttf binary
+seed/demo_dataset.sql linguist-generated=true -diff

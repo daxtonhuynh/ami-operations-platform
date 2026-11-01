@@ -1,0 +1,34 @@
+# AMI brand: navy #000080 and amber #FDA50F (from the AMI Education logo).
+[theme]
+base = "light"
+primaryColor = "#000080"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F3F4FA"
+textColor = "#161A3A"
+linkColor = "#000080"
+borderColor = "#DCDEEC"
+dataframeHeaderBackgroundColor = "#F3F4FA"
+font = "sans serif"
+headingFontWeights = [800, 700, 700, 600, 600, 600]
+# Chart slots (validated for colour-vision deficiency, see ami/charts.py): brand navy and amber stepped into the
+# chart lightness band, then green, magenta, violet, red.
+chartCategoricalColors = ["#1945b8", "#f09c0b", "#008300", "#e87ba4", "#6250d6", "#e34948"]
+
+[theme.sidebar]
+backgroundColor = "#000080"
+secondaryBackgroundColor = "#14148F"
+textColor = "#FFFFFF"
+primaryColor = "#FDA50F"
+linkColor = "#FDA50F"
+borderColor = "#3A3AA3"
+
+[server]
+headless = true
+runOnSave = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "type"

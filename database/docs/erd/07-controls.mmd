@@ -1,0 +1,46 @@
+erDiagram
+    ctl_control {
+        text control_code PK
+        text name
+        text domain
+        text risk
+        text rule
+        text check_view
+        text frequency
+        text severity
+        text owner_role_code FK
+        text app_role_code
+        text business_rule
+        boolean is_active
+    }
+    ctl_control_run {
+        bigint control_run_id PK
+        text control_code FK
+        timestamptz executed_at
+        date as_of_date
+        integer exception_count
+        bigint executed_by FK
+    }
+    ctl_control_exception {
+        bigint exception_id PK
+        text control_code FK,UK
+        text entity_type UK
+        bigint entity_id UK
+        text entity_ref
+        jsonb detail
+        text severity
+        bigint first_run_id FK
+        bigint last_run_id FK
+        bigint assigned_to FK
+        text status
+        timestamptz opened_at
+        timestamptz resolved_at
+        text resolution_note
+    }
+    hr_employee {
+        bigint employee_id PK
+    }
+    ctl_control ||--o{ ctl_control_exception : "control_code"
+    ctl_control_run ||--o{ ctl_control_exception : "first_run_id"
+    ctl_control_run ||--o{ ctl_control_exception : "last_run_id"
+    ctl_control ||--o{ ctl_control_run : "control_code"

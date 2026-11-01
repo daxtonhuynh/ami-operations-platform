@@ -1,0 +1,217 @@
+erDiagram
+    finance_fiscal_period {
+        integer period_id PK
+        date period_start UK
+        date period_end
+        smallint fiscal_year
+        text status
+        timestamptz closed_at
+    }
+    finance_gl_account {
+        text account_code PK
+        text name
+        text account_class
+        text parent_account_code FK
+        boolean is_postable
+        boolean is_capex
+        boolean is_depreciation
+        text legacy_source
+        integer sort_order
+    }
+    finance_cost_center {
+        text cost_center_code PK
+        text name
+        boolean is_academic
+        text programme_code FK
+        bigint manager_employee_id FK
+        boolean is_active
+    }
+    finance_pnl_line {
+        text pnl_line_code PK
+        text name
+        text section
+        text subsection
+        text legacy_line_code
+        integer sort_order
+    }
+    finance_pnl_line_mapping {
+        text account_code PK,FK
+        text cost_center_scope PK
+        text pnl_line_code FK
+    }
+    finance_revenue_account_map {
+        text programme_code PK,FK
+        text delivery_mode_code PK,FK
+        text account_code FK
+    }
+    finance_earning_account_map {
+        integer map_id PK
+        text earning_type_code FK,UK
+        text role_code FK,UK
+        text programme_code FK,UK
+        text delivery_mode_code FK,UK
+        text account_code FK
+    }
+    finance_vendor {
+        bigint vendor_id PK
+        text vendor_name UK
+        text vendor_type
+        text tax_code
+        text default_account_code FK
+        boolean is_active
+    }
+    finance_expense_claim {
+        bigint claim_id PK
+        text claim_no UK
+        bigint employee_id FK
+        text cost_center_code FK
+        date submitted_on
+        text status
+        bigint approved_by FK
+        date approved_on
+    }
+    finance_expense_claim_line {
+        bigint claim_line_id PK
+        bigint claim_id FK,UK
+        smallint line_no UK
+        date transaction_date
+        text invoice_no
+        text description
+        text business_purpose
+        text vendor_name
+        money_vnd_pos amount_excl_vat
+        text vat_code FK
+        pct vat_rate
+        numeric amount_incl_vat
+    }
+    finance_payment_voucher {
+        bigint voucher_id PK
+        text voucher_no UK
+        date voucher_date
+        bigint requested_by FK
+        bigint approved_by FK
+        bigint payee_vendor_id FK
+        bigint payee_employee_id FK
+        text funding_source
+        text payment_method_code FK
+        text invoice_no
+        boolean has_invoice
+        bigint claim_id FK
+        text status
+    }
+    finance_payment_voucher_line {
+        bigint voucher_line_id PK
+        bigint voucher_id FK,UK
+        smallint line_no UK
+        text description
+        text business_purpose
+        money_vnd_pos amount_excl_vat
+        text vat_code FK
+        pct vat_rate
+        numeric vat_amount
+        numeric amount_incl_vat
+        integer recognition_period_id FK
+        text cost_center_code FK
+        text account_code FK
+        bigint class_id FK
+    }
+    finance_fixed_asset {
+        bigint asset_id PK
+        text asset_code UK
+        text asset_name
+        text capex_account_code FK
+        text charge_account_code FK
+        text cost_center_code FK
+        bigint voucher_line_id FK
+        date acquisition_date
+        money_vnd_pos cost
+        money_vnd_pos residual_value
+        smallint useful_life_months
+        integer first_charge_period_id FK
+        text status
+        date disposed_on
+    }
+    finance_depreciation_schedule {
+        bigint asset_id PK,FK
+        integer period_id PK,FK
+        money_vnd_pos amount
+    }
+    finance_journal_entry {
+        bigint journal_entry_id PK
+        text entry_no UK
+        integer period_id FK
+        date entry_date
+        text basis
+        text entry_type
+        text description
+        text status
+        bigint posted_by FK
+        timestamptz posted_at
+    }
+    finance_journal_line {
+        bigint journal_line_id PK
+        bigint journal_entry_id FK,UK
+        smallint line_no UK
+        text account_code FK
+        text cost_center_code FK
+        money_vnd_pos debit
+        money_vnd_pos credit
+        text memo
+    }
+    ref_vat_group {
+        text vat_code PK
+        pct vat_rate
+        text description
+    }
+    hr_employee {
+        bigint employee_id PK
+    }
+    academic_class {
+        bigint class_id PK,UK
+    }
+    billing_refund {
+        bigint refund_id PK
+    }
+    billing_revenue_schedule {
+        bigint revenue_line_id PK
+    }
+    payroll_payroll_line {
+        bigint payroll_line_id PK
+    }
+    finance_payment_voucher |o--o{ billing_refund : "voucher_id"
+    finance_gl_account ||--o{ billing_revenue_schedule : "account_code"
+    finance_fiscal_period ||--o{ billing_revenue_schedule : "period_id"
+    hr_employee |o--o{ finance_cost_center : "manager_employee_id"
+    finance_fixed_asset ||--o{ finance_depreciation_schedule : "asset_id"
+    finance_fiscal_period ||--o{ finance_depreciation_schedule : "period_id"
+    finance_gl_account ||--o{ finance_earning_account_map : "account_code"
+    finance_cost_center ||--o{ finance_expense_claim : "cost_center_code"
+    hr_employee ||--o{ finance_expense_claim : "employee_id"
+    finance_expense_claim ||--o{ finance_expense_claim_line : "claim_id"
+    ref_vat_group ||--o{ finance_expense_claim_line : "vat_code"
+    finance_gl_account ||--o{ finance_fixed_asset : "capex_account_code"
+    finance_gl_account ||--o{ finance_fixed_asset : "charge_account_code"
+    finance_cost_center ||--o{ finance_fixed_asset : "cost_center_code"
+    finance_fiscal_period ||--o{ finance_fixed_asset : "first_charge_period_id"
+    finance_payment_voucher_line |o--o{ finance_fixed_asset : "voucher_line_id"
+    finance_gl_account |o--o{ finance_gl_account : "parent_account_code"
+    finance_fiscal_period ||--o{ finance_journal_entry : "period_id"
+    finance_gl_account ||--o{ finance_journal_line : "account_code"
+    finance_cost_center |o--o{ finance_journal_line : "cost_center_code"
+    finance_journal_entry ||--o{ finance_journal_line : "journal_entry_id"
+    finance_expense_claim |o--o{ finance_payment_voucher : "claim_id"
+    hr_employee |o--o{ finance_payment_voucher : "payee_employee_id"
+    finance_vendor |o--o{ finance_payment_voucher : "payee_vendor_id"
+    finance_gl_account ||--o{ finance_payment_voucher_line : "account_code"
+    academic_class |o--o{ finance_payment_voucher_line : "class_id"
+    finance_cost_center ||--o{ finance_payment_voucher_line : "cost_center_code"
+    finance_fiscal_period ||--o{ finance_payment_voucher_line : "recognition_period_id"
+    ref_vat_group ||--o{ finance_payment_voucher_line : "vat_code"
+    finance_payment_voucher ||--o{ finance_payment_voucher_line : "voucher_id"
+    finance_gl_account ||--o{ finance_pnl_line_mapping : "account_code"
+    finance_pnl_line ||--o{ finance_pnl_line_mapping : "pnl_line_code"
+    finance_gl_account ||--o{ finance_revenue_account_map : "account_code"
+    finance_gl_account |o--o{ finance_vendor : "default_account_code"
+    finance_cost_center |o--o{ hr_employee : "home_cost_center_code"
+    finance_gl_account ||--o{ payroll_payroll_line : "account_code"
+    finance_cost_center ||--o{ payroll_payroll_line : "cost_center_code"

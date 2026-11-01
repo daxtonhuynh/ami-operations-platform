@@ -1,0 +1,172 @@
+erDiagram
+    billing_group_registration {
+        bigint group_id PK
+        text group_code UK
+        date registered_on
+        text tier_code FK
+    }
+    billing_enrollment {
+        bigint enrollment_id PK
+        text enrollment_code UK
+        bigint student_id FK
+        bigint lead_id FK
+        smallint course_id FK
+        text delivery_mode_code FK
+        bigint class_id FK
+        date enrolled_on
+        bigint sales_owner_employee_id FK
+        text plan_code FK
+        integer course_price_id FK
+        money_vnd_pos list_price
+        bigint group_id FK
+        smallint output_commitment_level_id FK
+        bigint class_assigned_by FK
+        timestamptz class_assigned_at
+        text documents_url
+        text status_code FK
+        date status_changed_on
+    }
+    billing_enrollment_status_history {
+        bigint history_id PK
+        bigint enrollment_id FK
+        text status_code FK
+        date changed_on
+        timestamptz changed_at
+        text reason
+    }
+    billing_enrollment_discount {
+        bigint enrollment_id PK,FK,UK
+        smallint seq PK
+        text discount_code FK,UK
+        text discount_kind
+        numeric discount_value
+        text reason
+        text approval_status
+        bigint requested_by FK
+        bigint approved_by FK
+        timestamptz decided_at
+    }
+    billing_enrollment_charge {
+        bigint charge_id PK
+        bigint enrollment_id FK
+        text charge_type
+        text description
+        money_vnd amount
+    }
+    billing_payment_schedule {
+        bigint schedule_line_id PK
+        bigint enrollment_id FK,UK
+        smallint seq UK
+        text line_type
+        text label
+        date due_date
+        money_vnd_pos amount_due
+    }
+    billing_receipt {
+        bigint receipt_id PK
+        text receipt_no UK
+        date receipt_date
+        bigint student_id FK
+        bigint enrollment_id FK
+        bigint payer_guardian_id FK
+        text payer_name
+        money_vnd_pos amount
+        text payment_method_code FK
+        bigint collected_by FK
+        text status
+        bigint void_requested_by FK
+        timestamptz void_requested_at
+        text void_reason
+        bigint voided_by FK
+        timestamptz voided_at
+    }
+    billing_payment_allocation {
+        bigint allocation_id PK
+        bigint receipt_id FK,UK
+        bigint schedule_line_id FK,UK
+        money_vnd_pos amount
+        timestamptz allocated_at
+    }
+    billing_refund {
+        bigint refund_id PK
+        bigint enrollment_id FK
+        date refund_date
+        money_vnd_pos amount
+        text reason
+        bigint approved_by FK
+        bigint voucher_id FK
+        boolean reduces_contract
+    }
+    billing_write_off {
+        bigint write_off_id PK
+        bigint enrollment_id FK
+        date write_off_date
+        money_vnd_pos amount
+        text reason
+        bigint approved_by FK
+    }
+    billing_revenue_schedule {
+        bigint revenue_line_id PK
+        bigint enrollment_id FK,UK
+        integer period_id FK,UK
+        text line_type UK
+        text account_code FK
+        money_vnd amount
+        timestamptz generated_at
+    }
+    crm_student {
+        bigint student_id PK
+    }
+    crm_guardian {
+        bigint guardian_id PK
+    }
+    crm_lead {
+        bigint lead_id PK
+    }
+    academic_class {
+        bigint class_id PK,UK
+    }
+    ref_course {
+        smallint course_id PK
+    }
+    ref_course_price {
+        integer course_price_id PK
+    }
+    ref_payment_plan {
+        text plan_code PK
+    }
+    ref_discount_programme {
+        text discount_code PK
+    }
+    finance_payment_voucher {
+        bigint voucher_id PK
+    }
+    finance_fiscal_period {
+        integer period_id PK
+    }
+    finance_gl_account {
+        text account_code PK
+    }
+    academic_class |o--o{ billing_enrollment : "class_id, course_id"
+    ref_course ||--o{ billing_enrollment : "course_id"
+    ref_course_price |o--o{ billing_enrollment : "course_price_id"
+    billing_group_registration |o--o{ billing_enrollment : "group_id"
+    crm_lead |o--o{ billing_enrollment : "lead_id"
+    ref_payment_plan ||--o{ billing_enrollment : "plan_code"
+    crm_student ||--o{ billing_enrollment : "student_id"
+    billing_enrollment ||--o{ billing_enrollment_charge : "enrollment_id"
+    ref_discount_programme ||--o{ billing_enrollment_discount : "discount_code"
+    billing_enrollment ||--o{ billing_enrollment_discount : "enrollment_id"
+    billing_enrollment ||--o{ billing_enrollment_status_history : "enrollment_id"
+    billing_receipt ||--o{ billing_payment_allocation : "receipt_id"
+    billing_payment_schedule ||--o{ billing_payment_allocation : "schedule_line_id"
+    billing_enrollment ||--o{ billing_payment_schedule : "enrollment_id"
+    billing_enrollment |o--o{ billing_receipt : "enrollment_id"
+    crm_guardian |o--o{ billing_receipt : "payer_guardian_id"
+    crm_student ||--o{ billing_receipt : "student_id"
+    finance_payment_voucher |o--o{ billing_refund : "voucher_id"
+    billing_enrollment ||--o{ billing_refund : "enrollment_id"
+    finance_gl_account ||--o{ billing_revenue_schedule : "account_code"
+    billing_enrollment ||--o{ billing_revenue_schedule : "enrollment_id"
+    finance_fiscal_period ||--o{ billing_revenue_schedule : "period_id"
+    billing_enrollment ||--o{ billing_write_off : "enrollment_id"

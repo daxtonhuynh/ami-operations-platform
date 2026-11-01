@@ -1,0 +1,40 @@
+erDiagram
+    app_app_user {
+        integer user_id PK
+        text username UK
+        text full_name
+        text role_code
+        bigint employee_id FK
+        text password_hash
+        boolean is_active
+        timestamptz last_login_at
+    }
+    app_audit_log {
+        bigint audit_id PK
+        timestamptz occurred_at
+        text app_user
+        text db_role
+        text table_name
+        text action
+        text row_key
+        jsonb old_row
+        jsonb new_row
+    }
+    app_cash_close {
+        bigint cash_close_id PK
+        date close_date UK
+        bigint collector_id FK,UK
+        money_vnd_pos expected_cash
+        money_vnd_pos expected_transfer
+        money_vnd_pos counted_cash
+        numeric difference
+        timestamptz closed_at
+        bigint reviewed_by FK
+        timestamptz reviewed_at
+    }
+    hr_employee {
+        bigint employee_id PK
+    }
+    hr_employee |o--o{ app_app_user : "employee_id"
+    hr_employee ||--o{ app_cash_close : "collector_id"
+    hr_employee |o--o{ app_cash_close : "reviewed_by"

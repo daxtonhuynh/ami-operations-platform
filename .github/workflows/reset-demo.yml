@@ -1,0 +1,36 @@
+name: Reset demo data
+# Every Monday the hosted demo is regenerated up to the current date, so the business date stays "today" and the
+# Supabase free project is used at least once a week (inactive free projects are paused after 7 days).
+on:
+  schedule:
+    - cron: "17 1 * * 1"      # Monday 08:17 in Viet Nam
+  workflow_dispatch:
+
+jobs:
+  reset:
+    runs-on: ubuntu-24.04
+    if: ${{ vars.DEMO_RESET_ENABLED == 'true' }}
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Simulate the year up to today and load it into Supabase
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+        run: bash deploy/reset_demo.sh

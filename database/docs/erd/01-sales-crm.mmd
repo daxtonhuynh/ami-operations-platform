@@ -1,0 +1,111 @@
+erDiagram
+    crm_student {
+        bigint student_id PK
+        text student_code UK
+        text full_name
+        text gender
+        date date_of_birth
+        text phone
+        text email
+        integer school_id FK
+        text grade_label
+        date first_contact_date
+    }
+    crm_guardian {
+        bigint guardian_id PK
+        text full_name
+        text phone
+        text email
+    }
+    crm_student_guardian {
+        bigint student_id PK,FK
+        bigint guardian_id PK,FK
+        text relationship_code FK
+        boolean is_primary_contact
+        boolean is_payer
+    }
+    crm_student_availability {
+        bigint student_id PK,FK
+        weekday weekday PK
+        text time_band PK
+    }
+    crm_lead {
+        bigint lead_id PK
+        bigint student_id FK
+        date lead_date
+        bigint owner_employee_id FK
+        text channel_code FK
+        text referral_note
+        bigint referred_by_student_id FK
+        bigint referred_by_employee_id FK
+        text programme_code FK
+        text delivery_mode_code FK
+        text stage_code FK
+        text qualification_code FK
+        text consultation_outcome_code FK
+        text lost_reason_code FK
+        text lost_reason_note
+        smallint recommended_course_id FK
+        date closed_on
+        date next_follow_up_on
+    }
+    crm_lead_stage_history {
+        bigint history_id PK
+        bigint lead_id FK
+        text stage_code FK
+        timestamptz entered_at
+        bigint changed_by FK
+    }
+    crm_lead_activity {
+        bigint activity_id PK
+        bigint lead_id FK
+        text activity_type
+        timestamptz activity_at
+        bigint employee_id FK
+        text outcome_code FK
+    }
+    crm_placement_test {
+        bigint test_id PK
+        bigint lead_id FK
+        text test_type
+        timestamptz scheduled_at
+        text status
+        bigint assessed_by FK
+        smallint overall_level_id FK
+        timestamptz completed_at
+    }
+    crm_placement_test_score {
+        bigint test_id PK,FK
+        text skill_code PK
+        smallint level_id FK
+        numeric raw_score
+    }
+    hr_employee {
+        bigint employee_id PK
+    }
+    ref_course {
+        smallint course_id PK
+    }
+    ref_proficiency_level {
+        smallint level_id PK
+    }
+    billing_enrollment {
+        bigint enrollment_id PK
+    }
+    crm_lead |o--o{ billing_enrollment : "lead_id"
+    crm_student ||--o{ billing_enrollment : "student_id"
+    hr_employee |o--o{ crm_lead : "owner_employee_id"
+    ref_course |o--o{ crm_lead : "recommended_course_id"
+    hr_employee |o--o{ crm_lead : "referred_by_employee_id"
+    crm_student |o--o{ crm_lead : "referred_by_student_id"
+    crm_student ||--o{ crm_lead : "student_id"
+    hr_employee |o--o{ crm_lead_activity : "employee_id"
+    crm_lead ||--o{ crm_lead_activity : "lead_id"
+    crm_lead ||--o{ crm_lead_stage_history : "lead_id"
+    crm_lead ||--o{ crm_placement_test : "lead_id"
+    ref_proficiency_level |o--o{ crm_placement_test : "overall_level_id"
+    ref_proficiency_level |o--o{ crm_placement_test_score : "level_id"
+    crm_placement_test ||--o{ crm_placement_test_score : "test_id"
+    crm_student ||--o{ crm_student_availability : "student_id"
+    crm_guardian ||--o{ crm_student_guardian : "guardian_id"
+    crm_student ||--o{ crm_student_guardian : "student_id"

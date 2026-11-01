@@ -1,0 +1,50 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Database - build and run the 70 business-rule tests
+        working-directory: database
+        run: |
+          createdb ami_test
+          psql -q -v ON_ERROR_STOP=1 -d ami_test -f build.sql
+          psql -q -v ON_ERROR_STOP=1 -d ami_test -f 07_test_fixture.sql
+          psql -v ON_ERROR_STOP=1 -d ami_test -f 08_tests.sql
+
+      - name: Generator - simulate a year through the business API
+        run: |
+          createdb ami_gen
+          (cd database && psql -q -v ON_ERROR_STOP=1 -d ami_gen -f build.sql)
+          python seed/generate_dataset.py --dsn "dbname=ami_gen" --as-of 2026-10-31
+          bash seed/export_dataset.sh ami_gen > /tmp/generated.sql 2>/dev/null
+          createdb ami_load && (cd database && psql -q -v ON_ERROR_STOP=1 -d ami_load -f build.sql)
+          psql -q -v ON_ERROR_STOP=1 -d ami_load -1 -f /tmp/generated.sql
+
+      - name: Application - every page for every role, and a business day through the screens
+        env:
+          AMI_TEST_ADMIN_DSN: postgresql://postgres:postgres@localhost/postgres
+          AMI_TEST_DSN: postgresql://postgres:postgres@localhost/ami_apptest
+        run: pytest -q tests

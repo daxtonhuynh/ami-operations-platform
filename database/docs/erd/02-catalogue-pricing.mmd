@@ -1,0 +1,108 @@
+erDiagram
+    ref_programme {
+        text programme_code PK
+        text name UK
+        text description
+        boolean is_active
+    }
+    ref_delivery_mode {
+        text delivery_mode_code PK
+        text name UK
+    }
+    ref_course {
+        smallint course_id PK
+        text course_code UK
+        text programme_code FK,UK
+        text name
+        text audience
+        smallint level_order UK
+        smallint entry_level_id FK
+        smallint exit_level_id FK
+        numeric standard_hours
+        numeric default_hours_per_session
+        smallint default_sessions_per_week
+        boolean is_active
+    }
+    ref_course_price {
+        integer course_price_id PK
+        smallint course_id FK
+        text delivery_mode_code FK
+        text price_basis
+        money_vnd_pos amount
+        date effective_from
+        date effective_to
+    }
+    ref_fee {
+        integer fee_id PK
+        text fee_code
+        money_vnd_pos amount
+        date effective_from
+        date effective_to
+    }
+    ref_payment_plan {
+        text plan_code PK
+        text name
+        boolean materials_fee_applies
+        text description
+    }
+    ref_payment_plan_line {
+        text plan_code PK,FK
+        smallint seq PK
+        text label
+        pct share_pct
+        smallint due_offset_months
+    }
+    ref_discount_programme {
+        text discount_code PK
+        text name
+        text discount_kind
+        numeric discount_value
+        date valid_from
+        date valid_to
+        boolean requires_approval
+        boolean is_scholarship
+    }
+    ref_group_discount_tier {
+        text tier_code PK
+        smallint min_group_size UK
+        money_vnd_pos discount_amount
+    }
+    ref_proficiency_scale {
+        text scale_code PK
+        text name
+    }
+    ref_proficiency_level {
+        smallint level_id PK
+        text scale_code FK,UK
+        text level_code UK
+        smallint level_rank UK
+    }
+    billing_enrollment {
+        bigint enrollment_id PK
+    }
+    billing_enrollment_discount {
+        bigint enrollment_id PK,FK,UK
+        smallint seq PK
+    }
+    billing_group_registration {
+        bigint group_id PK
+    }
+    academic_class {
+        bigint class_id PK,UK
+    }
+    ref_course ||--o{ academic_class : "course_id"
+    ref_delivery_mode ||--o{ academic_class : "delivery_mode_code"
+    ref_course ||--o{ billing_enrollment : "course_id"
+    ref_course_price |o--o{ billing_enrollment : "course_price_id"
+    ref_delivery_mode ||--o{ billing_enrollment : "delivery_mode_code"
+    ref_proficiency_level |o--o{ billing_enrollment : "output_commitment_level_id"
+    ref_payment_plan ||--o{ billing_enrollment : "plan_code"
+    ref_discount_programme ||--o{ billing_enrollment_discount : "discount_code"
+    ref_group_discount_tier ||--o{ billing_group_registration : "tier_code"
+    ref_proficiency_level |o--o{ ref_course : "entry_level_id"
+    ref_proficiency_level |o--o{ ref_course : "exit_level_id"
+    ref_programme ||--o{ ref_course : "programme_code"
+    ref_course ||--o{ ref_course_price : "course_id"
+    ref_delivery_mode ||--o{ ref_course_price : "delivery_mode_code"
+    ref_payment_plan ||--o{ ref_payment_plan_line : "plan_code"
+    ref_proficiency_scale ||--o{ ref_proficiency_level : "scale_code"
