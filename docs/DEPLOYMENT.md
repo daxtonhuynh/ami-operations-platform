@@ -6,7 +6,8 @@ Total cost: zero on the free tiers. About 20 minutes.
 Browser ──► Streamlit app (streamlit_app.py, ami/)  ──login ami_app──►  Supabase PostgreSQL
                                                        SET LOCAL ROLE ami_<role> per transaction
 GitHub Actions ── CI on every push (database tests, generator, app tests)
-               └─ every Monday: regenerate the demo year up to today and reload it into Supabase
+               ├─ every Monday: regenerate the demo year up to today and reload it into Supabase
+               └─ every 8 hours: one query to Supabase and a visit to the app (keeps both awake)
 ```
 
 ## 1. Database on Supabase
@@ -14,6 +15,8 @@ GitHub Actions ── CI on every push (database tests, generator, app tests)
 1. Create a project at supabase.com (any region; note the database password).
 2. *Project settings → Database → Connection string*: copy the **Session pooler** URI (port 5432, user `postgres.<project-ref>`).
    The build uses psql meta-commands and COPY, so use the session pooler or the direct connection, not the transaction pooler.
+   If the database password contains characters such as `@ # / % ?`, percent-encode it in the URI, or reset it to
+   letters and digits only (for example the output of `openssl rand -hex 20`).
 3. From a machine with `psql` (PostgreSQL 15+ client):
 
 ```bash
@@ -39,14 +42,23 @@ DEMO_MODE = "true"
 DEMO_PASSWORD = "ami-demo"
 ```
 
+Each value sits on one line inside double quotes. A `DATABASE_URL` cut short after the password makes the logs say
+`failed to resolve host 'ami_app.<project-ref>'`. After editing the secrets the app picks up the new URL on the next
+page load (no reboot needed).
+
 `DEMO_MODE` shows the one-click role buttons on the sign-in page. The demo accounts use the password the dataset was generated with
 (`--password`, default `ami-demo`).
 
 ## 3. Weekly reset and keep-alive (optional)
 
-Supabase pauses free projects after a week without activity, and a demo looks best when its business date is recent.
-`.github/workflows/reset-demo.yml` runs every Monday: it builds a scratch PostgreSQL in the runner, simulates the year up to today
-(`seed/generate_dataset.py`) and reloads it into Supabase in one transaction.
+Free hosting pauses idle demos: Supabase pauses a free project after about a week of low database activity (it can be
+restored from the dashboard, data intact), and Streamlit Community Cloud puts an app to sleep after 12 hours without
+visitors (anyone can press *Yes, get this app back up!*). Two scheduled workflows keep the demo fresh and awake:
+
+| Workflow | When | What it does |
+|---|---|---|
+| `.github/workflows/reset-demo.yml` | Mondays | Builds a scratch PostgreSQL in the runner, simulates the year up to today (`seed/generate_dataset.py`) and reloads it into Supabase in one transaction, so the business date stays recent and visitors' test entries are cleared |
+| `.github/workflows/keep-alive.yml` | Every 8 hours | Runs one query against Supabase and opens the app, pressing the wake-up button if it is asleep |
 
 In the GitHub repository: *Settings → Secrets and variables → Actions*
 
@@ -54,9 +66,18 @@ In the GitHub repository: *Settings → Secrets and variables → Actions*
 |---|---|---|
 | Secret | `SUPABASE_DB_URL` | the `postgres` session-pooler URI from step 1 |
 | Secret | `DEMO_PASSWORD` | the demo password (optional, default `ami-demo`) |
-| Variable | `DEMO_RESET_ENABLED` | `true` |
+| Variable | `DEMO_RESET_ENABLED` | `true` (turns on both workflows) |
+| Variable | `DEMO_APP_URL` | the app's address, e.g. `https://ami-operations.streamlit.app` |
 
-Run it once by hand (*Actions → Reset demo data → Run workflow*) to check it.
+Run each once by hand (*Actions → Reset demo data / Keep demo awake → Run workflow*) to check it.
+
+GitHub disables scheduled workflows in a public repository after 60 days without activity in the repository, and sends
+an e-mail first. Re-enable them from the *Actions* tab (or push any commit) to keep the demo awake.
+
+To change a password later without printing it: generate it with `openssl rand -hex 20 | tr -d '\n' | pbcopy` (macOS),
+paste it into Supabase (*Reset database password*) and into the `SUPABASE_DB_URL` secret. For the application login, run
+`psql "$SUPABASE_DB_URL" -v app_password="$APP_PASSWORD" -f deploy/supabase_setup.sql` with a new `APP_PASSWORD` and update
+`DATABASE_URL` in the Streamlit secrets.
 
 ## 4. Running locally
 

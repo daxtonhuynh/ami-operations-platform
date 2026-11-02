@@ -6,7 +6,10 @@
 Its sales, academic, HR, finance and admin processes first ran on a zero-cost system of five linked Excel/SharePoint workbooks:
 **lead → placement test → enrolment → class → receipt → payroll → expense → P&L (cash and accrual)**.
 
-Case studies: [Phase 1 · Excel system](https://daxtonhuynh.github.io/business-projects/ami-operations/) · [Phase 2 · Operations platform](https://daxtonhuynh.github.io/business-projects/ami-operations-platform/)
+> **Live demo: [ami-operations.streamlit.app](https://ami-operations.streamlit.app)**. Choose a role on the sign-in page to open its workspace; no password needed.
+> On the free hosting the app sleeps after 12 hours without visitors: if you see *Yes, get this app back up!*, press it and wait about a minute.
+
+Case studies: [Phase 1 · Excel system](https://daxtonhuynh.github.io/business-projects/ami-operations/) · [Phase 2 · Operations platform](https://daxtonhuynh.github.io/ami-operations-platform/)
 
 This repository is **phase 2 of the AMI Operational System**: it takes that system to the next level in three layers:
 
@@ -79,7 +82,7 @@ pip install -r requirements.txt
 DATABASE_URL=postgresql:///ami_demo streamlit run streamlit_app.py      # demo password: ami-demo
 ```
 
-Hosting on Supabase + Streamlit Community Cloud (free tiers), with a weekly GitHub Action that regenerates the demo up to the current
+The live demo runs on Supabase + Streamlit Community Cloud (free tiers), with a weekly GitHub Action that regenerates the demo up to the current
 date: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ### Tests
@@ -113,6 +116,8 @@ ami/assets/               brand logos (AMI navy #000080, amber #FDA50F) and the 
 database/                 01_schema … 06_security (build.sql), 07_test_fixture, 08_tests, docs/, tools/
 seed/                     generate_dataset.py (simulated year), export_dataset.sh, demo_dataset.sql (generated)
 deploy/                   deploy.sh (Supabase), supabase_setup.sql (app login), reset_demo.sh
+.github/workflows/        ci (every push), reset-demo (weekly), keep-alive (every 8 hours)
+index.html, assets/       phase 2 case-study page (GitHub Pages)
 tests/                    pytest: dataset invariants, application end-to-end
 workbooks/                the original Excel system (sanitised)
 docs/                     role guide, business rules, ERD mapping, deployment, module docs of the Excel system

@@ -30,10 +30,17 @@ class BusinessRuleError(Exception):
 
 
 @st.cache_resource(show_spinner=False)
-def _pool() -> ConnectionPool:
+def _pool_for(url: str) -> ConnectionPool:
     # prepare_threshold=None: no server-side prepared statements, so the app also works behind a transaction pooler.
-    return ConnectionPool(config.database_url(), min_size=1, max_size=6, open=True, timeout=20,
+    # check: a connection the hosted pooler closed while idle is replaced before use instead of failing a page.
+    return ConnectionPool(url, min_size=1, max_size=6, open=True, timeout=20, max_idle=300,
+                          check=ConnectionPool.check_connection,
                           kwargs={"prepare_threshold": None, "connect_timeout": 10, "application_name": "ami-operations"})
+
+
+def _pool() -> ConnectionPool:
+    """One pool per DATABASE_URL: changing the secret on the hosting platform takes effect without a reboot."""
+    return _pool_for(config.database_url())
 
 
 def _user() -> dict | None:

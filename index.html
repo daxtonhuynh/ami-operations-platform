@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#00003c">
-  <meta name="description" content="AMI Operational System, phase 2: the Excel-based operations system of AMI Education rebuilt as a role-based platform on PostgreSQL and Streamlit, with enforced business rules, operational controls and month-end close.">
+  <meta name="description" content="AMI Operational System, phase 2: after AMI Education outgrew its Excel system, the operating logic rebuilt as a role-based platform on PostgreSQL and Streamlit, with enforced business rules, operational controls and month-end close.">
   <title>AMI Operational System · Phase 2: Operations Platform | Daxton Huynh</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,11 +23,9 @@
     a:focus-visible,button:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
     .wrap{width:min(var(--max),calc(100% - 80px));margin-inline:auto}
 
-    /* Hero: same photographic backdrop, type hierarchy and navy overlay as GO2025 */
-    .hero{position:relative;min-height:590px;display:flex;align-items:center;isolation:isolate;overflow:hidden;background:#03032d}
-    .hero-photo{position:absolute;inset:0;z-index:-3;background:url('assets/finance-dashboard.webp') right 20% / cover no-repeat;filter:saturate(.55) brightness(.62) blur(1.2px)}
-    .hero-shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(0,0,49,.97),rgba(0,0,51,.94) 42%,rgba(0,0,48,.79) 70%,rgba(0,0,50,.70)),linear-gradient(0deg,var(--navy),transparent 47%)}
-    .hero-inner{padding:70px 0 70px;position:relative;min-height:590px;display:flex;align-items:center}
+    /* Hero: same type hierarchy as phase 1, without a photograph */
+    .hero{position:relative;display:flex;align-items:center;overflow:hidden;background:radial-gradient(900px 460px at 86% 12%,rgba(98,90,190,.30),transparent 70%),linear-gradient(180deg,#06064c 0%,#03032d 62%,var(--navy) 100%);border-bottom:1px solid var(--line)}
+    .hero-inner{padding:70px 0 74px;position:relative;display:flex;align-items:center}
     .hero-content{width:min(900px,100%);position:relative;z-index:1}
     .eyebrow{display:flex;align-items:center;gap:12px;color:var(--yellow);font-size:11px;letter-spacing:.19em;text-transform:uppercase;font-weight:800;margin:0 0 26px}
     .eyebrow::before{content:"";width:32px;height:2px;background:var(--yellow)}
@@ -107,7 +105,7 @@
     .screenshots-intro{color:var(--muted);font-size:13px;margin:-10px 0 24px}
     .shots-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
     .shot{margin:0;padding:15px;background:var(--purple);border:1px solid rgba(255,255,255,.1);border-radius:13px;display:flex;flex-direction:column}
-    .shot img{width:100%;height:340px;object-fit:contain;background:#f5f5f5;border-radius:8px}
+    .shot img{width:100%;height:auto;aspect-ratio:1440 / 900;object-fit:cover;object-position:left top;background:#fff;border-radius:8px}
     .shot figcaption{padding:16px 5px 9px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex:1}
     .shot-label{font-size:12px;line-height:1.6;color:#f0eefa;max-width:390px}
     .shot button{flex-shrink:0;padding:9px 13px;background:transparent;border:1px solid rgba(250,255,0,.56);border-radius:99px;color:var(--yellow);font:800 10px Montserrat,Arial,sans-serif;cursor:pointer}
@@ -163,13 +161,49 @@
 
     /* Phase 2 additions */
     .hero .cta-row{margin-top:30px}
+    .cta-note{margin:14px 0 0;font-size:11px;line-height:1.6;color:#cfcde5;max-width:700px}
+    .cta-note code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px;background:rgba(0,0,40,.6);padding:1px 6px;border-radius:4px;color:#fff;white-space:nowrap}
     .value-number.lilac{color:#b9b4ff}
     .demo-facts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(63,59,112,.40);margin:0 0 26px}
     .demo-facts div{padding:16px 14px;min-width:0}
     .demo-facts div:not(:last-child){border-right:1px solid var(--line)}
     .demo-facts strong{display:block;font-size:24px;font-weight:900;letter-spacing:-.04em;color:var(--yellow);line-height:1.1}
     .demo-facts small{display:block;color:#cfcde5;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-top:6px;line-height:1.4}
-    .shot img{background:#fff}
+    .growth{display:grid;grid-template-columns:.92fr 1.08fr;gap:46px;align-items:center;padding-top:56px;padding-bottom:58px;border-bottom:1px solid var(--line)}
+    .growth-stats{display:grid;gap:12px}
+    .growth-stat{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:center;background:var(--purple);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:16px 20px}
+    .growth-stat strong{font-size:clamp(34px,3.3vw,46px);font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--green)}
+    .growth-stat:nth-child(2) strong{color:var(--yellow)}.growth-stat:nth-child(3) strong{color:#b9b4ff}
+    .growth-stat span{font-size:12.5px;line-height:1.5;font-weight:700;color:#eeecfa}
+    .growth-note{font-size:10px;color:#b7b5d8;margin:2px 2px 0;letter-spacing:.03em}
+    .growth-story h3{font-size:22px;font-weight:800;line-height:1.3;margin:0 0 14px}
+    .growth-story p{font-size:13px;color:#dcd9ef;margin:0 0 14px}
+    .growth-story p:last-child{margin-bottom:0}
+    .growth-story strong{color:#fff}
+    .arch{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px;margin:0 0 44px}
+    .tier{background:rgba(63,59,112,.52);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;align-items:center}
+    .tier h4,.delivery h4{margin:0;font-size:13.5px;font-weight:800;color:var(--yellow);line-height:1.35}
+    .tier h4 small,.delivery h4 small{display:block;color:#b7b5d8;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-top:5px}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{font-size:11px;line-height:1.3;padding:6px 10px;border-radius:99px;background:rgba(0,0,60,.6);border:1px solid rgba(255,255,255,.14);color:#eceaf9}
+    .chip b{color:var(--yellow);font-weight:800}
+    .hop{display:flex;align-items:center;gap:12px;padding:7px 0 7px 94px;font-size:10.5px;color:#cfcde5;line-height:1.45}
+    .hop::before{content:"";flex:0 0 2px;height:30px;background:linear-gradient(var(--yellow),rgba(250,255,0,.25))}
+    .hop code,.tech-card code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px;background:rgba(0,0,40,.6);padding:1px 6px;border-radius:4px;color:#fff}
+    .delivery{background:rgba(63,59,112,.30);border:1px dashed rgba(255,255,255,.22);border-radius:12px;padding:18px 20px}
+    .delivery ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px}
+    .delivery li{font-size:11.5px;line-height:1.6;color:#e6e3f7;padding-left:14px;position:relative}
+    .delivery li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:2px;background:var(--yellow)}
+    .delivery li b{color:#fff}
+    .tech-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 46px}
+    .tech-card{background:rgba(63,59,112,.46);border-radius:10px;padding:20px 22px;border-top:2px solid var(--yellow);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+    .tech-card .tag{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--yellow);margin:0 0 8px}
+    .tech-card h4{font-size:15px;line-height:1.35;margin:0 0 10px;font-weight:800}
+    .tech-card p{font-size:12px;line-height:1.75;color:#e6e3f7;margin:0}
+    .stack-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-22px 0 46px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#b7b5d8}
+    .stack-line .chip{text-transform:none;letter-spacing:0;font-weight:600}
+    @media(max-width:1050px){.arch{grid-template-columns:1fr}.tech-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.growth{grid-template-columns:1fr;gap:28px}.tier{grid-template-columns:160px minmax(0,1fr)}.hop{padding-left:74px}}
+    @media(max-width:760px){.tech-grid{grid-template-columns:1fr}.tier{grid-template-columns:1fr;gap:10px}.hop{padding-left:20px}.growth{padding:42px 0}.growth-stat{grid-template-columns:118px minmax(0,1fr)}}
     @media(max-width:1050px){.demo-facts{grid-template-columns:repeat(3,minmax(0,1fr))}.demo-facts div:nth-child(3){border-right:0}.demo-facts div:nth-child(-n+3){border-bottom:1px solid var(--line)}}
     @media(max-width:430px){.demo-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.demo-facts div{border-right:0!important;border-bottom:1px solid var(--line)}.demo-facts div:nth-child(odd){border-right:1px solid var(--line)!important}}
 
@@ -177,10 +211,9 @@
       .hero h1{font-size:clamp(36px,5.3vw,57px)}.challenge-and-results{gap:22px}
       .value-card{grid-template-columns:110px 1fr;padding:18px;gap:13px}.value-number{font-size:51px}
       .value-body h3{font-size:16px}.value-body p{font-size:11.5px}
-      .shot img{height:280px}
     }
     @media(max-width:760px){
-      .wrap{width:min(100% - 36px,590px)}.hero,.hero-inner{min-height:auto}
+      .wrap{width:min(100% - 36px,590px)}.hero{min-height:auto}
       .hero-inner{padding:58px 0 68px}.hero h1{font-size:clamp(37px,8.6vw,58px)}
       .hero .lead{font-size:13px}.eyebrow{gap:9px;flex-wrap:wrap}.eyebrow .date{margin-left:0}
       .intro{grid-template-columns:1fr;gap:25px;padding:42px 0}.intro .info-strip{order:-1}
@@ -192,7 +225,7 @@
       .architecture{width:100%;padding:9px}
       .architecture img{width:100%;height:auto}
       .architecture figcaption{flex-direction:column;align-items:start;gap:12px}
-      .shots-grid{grid-template-columns:1fr}.shot img{height:auto;max-height:350px}
+      .shots-grid{grid-template-columns:1fr}
       .screenshots{margin-top:34px;padding:28px 0 0}.footer{flex-direction:column;align-items:start;gap:12px}
     }
     @media(max-width:430px){
@@ -212,16 +245,15 @@
 <body>
 <main>
   <section class="hero" aria-labelledby="page-title">
-    <div class="hero-photo" aria-hidden="true"></div>
-    <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-inner wrap">
       <div class="hero-content">
-        <nav class="phase-nav" aria-label="AMI Operational System phases"><a href="../ami-operations/">Phase 1 · Excel system</a><a href="../ami-operations-platform/" aria-current="page">Phase 2 · Operations platform</a></nav>
+        <nav class="phase-nav" aria-label="AMI Operational System phases"><a href="https://daxtonhuynh.github.io/business-projects/ami-operations/">Phase 1 · Excel system</a><a href="./" aria-current="page">Phase 2 · Operations platform</a></nav>
         <p class="eyebrow"><img src="assets/ami-logo.png" alt="AMI Education"><span class="date">Phase 2 · 2026 · Portfolio rebuild</span></p>
         <h1 id="page-title"><span>FROM FIVE LINKED WORKBOOKS TO</span> A ROLE-BASED OPERATIONS PLATFORM</h1>
         <div class="headline-rule"></div>
-        <p class="lead">Phase 1 proved AMI Education's operating logic in Excel. Phase 2 rebuilds that logic as a <strong>PostgreSQL database and a web application</strong>: every business rule is enforced by the database, every role works in its own workspace, and a simulated year of fictitious data shows it running from the first inquiry to the month-end P&amp;L.</p>
-        <div class="cta-row"><a class="btn" href="https://github.com/daxtonhuynh/ami-operations-platform" target="_blank" rel="noopener noreferrer">VIEW THE CODE ON GITHUB ↗</a><a class="btn ghost" href="../ami-operations/">← PHASE 1 CASE STUDY</a></div>
+        <p class="lead">Nearly three years in, AMI Education had grown its revenue volume by more than 120% and was running <strong>1,500+ customer records and 600+ leads</strong> through five linked workbooks. Phase 2 is the system that growth calls for: a <strong>PostgreSQL database and a role-based web application</strong> that enforces every business rule, gives each staff member their own workspace, and runs a simulated year of fictitious data from the first inquiry to the month-end P&amp;L.</p>
+        <div class="cta-row"><a class="btn" href="https://ami-operations.streamlit.app" target="_blank" rel="noopener noreferrer">TRY THE LIVE DEMO ↗</a><a class="btn ghost" href="https://github.com/daxtonhuynh/ami-operations-platform" target="_blank" rel="noopener noreferrer">VIEW THE CODE ON GITHUB ↗</a><a class="btn ghost" href="https://daxtonhuynh.github.io/business-projects/ami-operations/">← PHASE 1 CASE STUDY</a></div>
+        <p class="cta-note">Choose a role on the sign-in page to open its workspace; no password needed. On the free hosting the app sleeps when idle: if you see <em>Yes, get this app back up!</em>, press it and wait about a minute.</p>
       </div>
     </div>
   </section>
@@ -234,21 +266,42 @@
     </div>
     <div>
       <p class="section-kicker">01 / Why a phase 2</p>
-      <h2>Excel proved the logic. It could not enforce it.</h2>
-      <p>Data modelling <span aria-hidden="true">·</span> Business rules <span aria-hidden="true">·</span> Access control <span aria-hidden="true">·</span> Financial controls</p>
+      <h2>The business outgrew its spreadsheets.</h2>
+      <p>Scalability <span aria-hidden="true">·</span> Data integrity <span aria-hidden="true">·</span> Access control <span aria-hidden="true">·</span> Staff accountability</p>
     </div>
   </section>
 
-  <section class="challenge-and-results wrap" aria-label="Limits of phase 1 and what the platform adds">
+  <section class="growth wrap" aria-label="How AMI Education grew">
+    <div>
+      <div class="growth-stats">
+        <div class="growth-stat"><strong>120%+</strong><span>growth in revenue volume</span></div>
+        <div class="growth-stat"><strong>1,500+</strong><span>customer records to manage</span></div>
+        <div class="growth-stat"><strong>600+</strong><span>leads in the sales pipeline</span></div>
+      </div>
+      <p class="growth-note">AMI Education, nearly three years after launch.</p>
+    </div>
+    <div class="growth-story">
+      <h3>A system built for a start-up, running a growing business.</h3>
+      <p>Phase 1 was designed for a small team, a handful of classes and one person who knew where every formula lived. It did its job: <strong>70% less administrative work</strong> at zero software cost. Then the business grew.</p>
+      <p>More learners, more classes and more staff meant heavier files, more links between the five workbooks and more people editing at the same time. Links failed to refresh, and a single wrong entry could ripple into class rosters, payroll and both P&amp;L views before anyone noticed.</p>
+      <p>A larger team also needed what spreadsheets cannot give: <strong>personal accounts, approvals and a record of who did what</strong>. To keep scaling, and to manage the people behind the numbers, AMI's operating logic needed a new foundation.</p>
+    </div>
+  </section>
+
+  <section class="challenge-and-results wrap" aria-label="Limits of phase 1 and what phase 2 delivers">
     <div class="column-block">
       <div class="bar-title">Where Excel reached its limits</div>
       <article class="challenge-card">
-        <h3>Rules lived in formulas</h3>
-        <p>Pricing, payroll and revenue logic sat in cells that any user could overwrite. When a link between workbooks broke, data simply stopped flowing until someone noticed.</p>
+        <h3>Volume broke the links</h3>
+        <p>As the workbooks grew, external links between them slowed down and failed to refresh. A warning such as "We couldn't get updated values from a linked workbook" meant receivables, payroll or the P&amp;L were quietly out of date.</p>
       </article>
       <article class="challenge-card">
-        <h3>Access by trust, not by role</h3>
-        <p>Sales staff and managers worked in the same files. Nothing stopped an entry in the wrong area, and there was no field-level record of who changed what.</p>
+        <h3>Errors cascaded downstream</h3>
+        <p>A mistyped class code or a payment recorded twice flowed automatically into rosters, payroll and both P&amp;L views. Finding the source meant tracing formulas back across five files by hand.</p>
+      </article>
+      <article class="challenge-card">
+        <h3>A growing team without accountability</h3>
+        <p>Advisors, teachers and managers shared the same files with no personal accounts and no approvals. Nothing stopped an entry in the wrong area, and there was no field-level record of who changed what.</p>
       </article>
       <article class="challenge-card">
         <h3>Month-end relied on discipline</h3>
@@ -256,18 +309,22 @@
       </article>
     </div>
     <div class="column-block">
-      <div class="bar-title">What the platform adds</div>
+      <div class="bar-title">What phase 2 delivers</div>
       <article class="value-card">
-        <div class="value-number">93<small>tables in one relational model</small></div>
-        <div class="value-body"><h3>One source of truth</h3><p>The five workbooks become <strong>one PostgreSQL database</strong>: keys and constraints instead of lookups, so a learner, a payment or an hour taught is entered once and reused everywhere.</p></div>
+        <div class="value-number">1<small>database instead of five linked workbooks</small></div>
+        <div class="value-body"><h3>No more broken links</h3><p>Sales, academic, HR and finance read and write <strong>the same PostgreSQL database</strong>. Reports are live queries rather than copies, so there is nothing to refresh and nothing to fall out of sync.</p></div>
       </article>
       <article class="value-card">
-        <div class="value-number yellow">21<small>automated operational controls</small></div>
-        <div class="value-body"><h3>Controls that raise their hand</h3><p>Unassigned leads, unconfirmed sessions, discounts outside policy, unclosed cash days: <strong>exceptions land in a queue</strong> until someone resolves them, and every change is audited.</p></div>
+        <div class="value-number yellow">5<small>role workspaces with personal accounts</small></div>
+        <div class="value-body"><h3>Built for a growing team</h3><p>Each person signs in to a workspace that shows <strong>only their work and allows only their actions</strong>. Discounts outside policy and receipt voids go to Finance for approval, and every change is logged with who and when.</p></div>
       </article>
       <article class="value-card">
-        <div class="value-number lilac">70<small>business-rule tests on every change</small></div>
-        <div class="value-body"><h3>Rules that are tested</h3><p>Pricing, revenue recognition, payroll, permissions and period close each have <strong>automated tests</strong> that run whenever the code changes.</p></div>
+        <div class="value-number lilac">21<small>automated operational controls</small></div>
+        <div class="value-body"><h3>Errors caught at the source</h3><p>Constraints reject invalid entries before they are saved, and <strong>21 control checks</strong> queue what still needs attention: unassigned leads, unconfirmed sessions, overdue instalments, cash differences.</p></div>
+      </article>
+      <article class="value-card">
+        <div class="value-number">70<small>business-rule tests on every change</small></div>
+        <div class="value-body"><h3>Ready to scale</h3><p>Every rule is covered by <strong>automated tests</strong>, and a simulated year with 785 leads, 541 enrolments and 1,689 receipts runs end to end through the same rules, including twelve month-end closes.</p></div>
       </article>
     </div>
   </section>
@@ -278,10 +335,48 @@
       <div class="band"><h2 id="system-title">Relational, role-based platform</h2><span class="line" aria-hidden="true"></span></div>
       <div class="solution-points">
         <div class="solution-point"><span class="marker" aria-hidden="true">✓</span><span><strong>Five workspaces that mirror how AMI worked:</strong> Learning Advisors enter sales and receipts; the Academic Manager runs classes; the HR Manager runs payroll; the Finance Manager owns spend, revenue, reporting and the close; the Director sees everything, read-only.</span></div>
-        <div class="solution-point"><span class="marker" aria-hidden="true">✓</span><span><strong>Rules live in the database:</strong> every action goes through the same constraints, triggers and functions, and each transaction runs under the user's database role, so permissions hold even outside the app.</span></div>
-        <div class="solution-point"><span class="marker" aria-hidden="true">✓</span><span><strong>Contract-based revenue recognition:</strong> tuition is earned month by month over the class; cash and accrual P&amp;L and deferred revenue all come from the same records.</span></div>
-        <div class="solution-point"><span class="marker" aria-hidden="true">✓</span><span><strong>Month-end close with gates:</strong> a month closes in order and only after its payroll is approved; receipts, refunds and write-offs are locked in closed months.</span></div>
+        <div class="solution-point"><span class="marker" aria-hidden="true">✓</span><span><strong>Single input, many outputs:</strong> a learner, a payment or an hour taught is entered once and flows into rosters, receivables, payroll, revenue and both P&amp;L views, as in phase 1, but through enforced rules instead of copied formulas.</span></div>
       </div>
+
+      <div class="diagram-head"><h3>Technical architecture</h3><p>Three layers; the rules live in the bottom one</p></div>
+      <div class="arch">
+        <div>
+          <div class="tier">
+            <h4>Users<small>Browser</small></h4>
+            <div class="chips"><span class="chip">Learning Advisor</span><span class="chip">Academic Manager</span><span class="chip">HR Manager</span><span class="chip">Finance Manager</span><span class="chip">Director (read-only)</span></div>
+          </div>
+          <div class="hop">Sign-in, then only the pages of the user's role</div>
+          <div class="tier">
+            <h4>Application<small>Python · Streamlit</small></h4>
+            <div class="chips"><span class="chip">Role-based navigation</span><span class="chip">Forms with live previews</span><span class="chip">Dashboards (Altair)</span><span class="chip">PDF receipts &amp; payslips (ReportLab)</span><span class="chip">Connection pool (psycopg 3)</span></div>
+          </div>
+          <div class="hop">One transaction per action, run as the user's role: <code>SET LOCAL ROLE</code></div>
+          <div class="tier">
+            <h4>Database<small>PostgreSQL</small></h4>
+            <div class="chips"><span class="chip"><b>93</b> tables · 9 schemas</span><span class="chip"><b>54</b> functions · <b>47</b> triggers</span><span class="chip"><b>17</b> reporting views</span><span class="chip"><b>21</b> control checks</span><span class="chip">Roles, grants &amp; row-level security</span><span class="chip">Audit trail</span></div>
+          </div>
+        </div>
+        <aside class="delivery" aria-label="Quality and delivery">
+          <h4>Around it<small>Quality &amp; delivery</small></h4>
+          <ul>
+            <li><b>GitHub Actions</b> builds a fresh database and runs the 70 SQL tests and the application tests on every push.</li>
+            <li><b>Data generator</b> replays a full year day by day through the same functions, with a fixed seed.</li>
+            <li><b>Hosting</b> on Supabase (PostgreSQL) and Streamlit Community Cloud, with a weekly job that can refresh the demo year.</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="diagram-head"><h3>How it works, layer by layer</h3><p>The technical choices behind the business rules</p></div>
+      <div class="tech-grid">
+        <article class="tech-card"><p class="tag">Data model</p><h4>93 tables across nine business areas</h4><p>One schema per area: CRM, academic, billing, HR, payroll, finance, controls, reference data and the app. 175 foreign keys and 116 check constraints hold the records together, and exclusion constraints stop a price or a pay rate from having two overlapping validity periods. The chart of accounts and the P&amp;L layout are data, so Finance can change them without touching code.</p></article>
+        <article class="tech-card"><p class="tag">Business logic</p><h4>Rules run inside the database</h4><p>Business actions such as enrolling a learner, recording a receipt, calculating payroll or closing a month are PL/pgSQL functions (54 in total) backed by 47 triggers. Each validates, writes and derives its results in one transaction. The enrolment screen runs the real function and rolls it back, so the preview shows exactly what will be saved.</p></article>
+        <article class="tech-card"><p class="tag">Security</p><h4>Permissions enforced below the app</h4><p>The application logs in as a user with no rights of its own. Every transaction switches to the signed-in person's database role with <code>SET LOCAL ROLE</code>, so grants and row-level security apply to every query. Write functions run as <code>SECURITY DEFINER</code> with a fixed search path, and passwords are hashed with pgcrypto.</p></article>
+        <article class="tech-card"><p class="tag">Accounting</p><h4>Contract-based revenue recognition</h4><p>Net tuition is spread month by month from the class start (or a late joiner's first month) to the class end; materials are earned up front; drop-outs earn the months served. Deferred revenue is cash kept minus revenue recognised, per enrolment. Cash and accrual P&amp;L share one chart of accounts: write-offs affect accrual only, refunds affect cash only.</p></article>
+        <article class="tech-card"><p class="tag">Controls &amp; audit</p><h4>Exceptions, audit trail and period close</h4><p>21 control checks across sales, billing, academic, payroll and expenses feed a persistent exception queue (open, in progress, resolved, risk accepted). An audit trigger records changes with the user and time. A month closes only after the previous one and only once payroll is approved; closed months reject new receipts, refunds and write-offs.</p></article>
+        <article class="tech-card"><p class="tag">Quality &amp; delivery</p><h4>Tested, reproducible, deployable</h4><p>70 SQL tests cover the business rules, and pytest drives every page for every role plus a full lead-to-close workflow. GitHub Actions runs both on each push. A generator replays a full year day by day through the same functions with a fixed seed, and the platform deploys to Supabase (PostgreSQL) and Streamlit Community Cloud.</p></article>
+      </div>
+      <p class="stack-line">Stack <span class="chip">PostgreSQL 16</span><span class="chip">PL/pgSQL</span><span class="chip">Python</span><span class="chip">Streamlit</span><span class="chip">psycopg 3</span><span class="chip">pandas</span><span class="chip">Altair</span><span class="chip">ReportLab</span><span class="chip">pytest</span><span class="chip">GitHub Actions</span><span class="chip">Supabase</span></p>
+
       <div class="diagram-head"><h3>Relational data model (core)</h3><p>Interactive: select the button to view in full size</p></div>
       <figure class="wide-figure">
         <img src="assets/relational-model.webp" width="2600" height="1100" alt="Core relational model of the AMI Operations Platform across CRM, academic, billing, HR, payroll, finance, reference data and controls" loading="lazy">
@@ -334,7 +429,7 @@
   <section class="next-section wrap" aria-labelledby="compare-title">
     <p class="section-kicker">03 / Phase 1 → phase 2</p>
     <h2 id="compare-title">Same business, same logic, a different foundation.</h2>
-    <p class="next-intro">Phase 2 keeps what made phase 1 work (single-input workflows, automated payroll and revenue recognition, cash and accrual P&amp;L) and moves it onto a foundation that enforces the rules for every user.</p>
+    <p class="next-intro">Phase 2 keeps what made phase 1 work (single-input workflows, automated payroll and revenue recognition, cash and accrual P&amp;L) and moves it onto a foundation that scales with the business and enforces the rules for every user.</p>
       <table class="compare">
         <caption class="sr-only">Phase 1 and phase 2 of the AMI Operational System compared</caption>
         <thead><tr><th scope="col"><span class="sr-only">Aspect</span></th><th scope="col">Phase 1 · Excel system (2024)</th><th scope="col" class="current">Phase 2 · Operations platform (2026)</th></tr></thead>
@@ -351,10 +446,10 @@
           <tr><th scope="row">Result</th><td data-label="Phase 1">70% less administrative work; 10% lower monthly staffing cost</td><td class="current" data-label="Phase 2">Shows how the system grows beyond spreadsheets: enforced rules, permissions and audit</td></tr>
         </tbody>
       </table>
-    <div class="cta-row"><a class="btn" href="https://github.com/daxtonhuynh/ami-operations-platform" target="_blank" rel="noopener noreferrer">VIEW THE CODE ON GITHUB ↗</a><a class="btn ghost" href="../ami-operations/">← READ THE PHASE 1 CASE STUDY</a></div>
+    <div class="cta-row"><a class="btn" href="https://ami-operations.streamlit.app" target="_blank" rel="noopener noreferrer">TRY THE LIVE DEMO ↗</a><a class="btn ghost" href="https://github.com/daxtonhuynh/ami-operations-platform" target="_blank" rel="noopener noreferrer">VIEW THE CODE ON GITHUB ↗</a><a class="btn ghost" href="https://daxtonhuynh.github.io/business-projects/ami-operations/">← READ THE PHASE 1 CASE STUDY</a></div>
   </section>
 </main>
-<footer class="footer wrap"><span>© 2026 Daxton Huynh · AMI Education · AMI Operational System, phase 2</span><span class="footer-links"><a href="../ami-operations/">← Phase 1: Excel system</a><a href="https://daxtonhuynh.github.io/portfolio/#business">← Back to Me in Business</a></span></footer>
+<footer class="footer wrap"><span>© 2026 Daxton Huynh · AMI Education · AMI Operational System, phase 2</span><span class="footer-links"><a href="https://ami-operations.streamlit.app" target="_blank" rel="noopener noreferrer">Live demo ↗</a><a href="https://daxtonhuynh.github.io/business-projects/ami-operations/">← Phase 1: Excel system</a><a href="https://daxtonhuynh.github.io/portfolio/#business">← Back to Me in Business</a></span></footer>
 <dialog id="image-viewer" aria-label="Expanded project image">
   <button type="button" id="close-viewer">Close ✕</button>
   <img id="expanded-image" alt="">

@@ -40,8 +40,9 @@ def login_page():
         try:
             bd = db.business_date()
             st.caption(f"Business date of this demo: **{ui.date(bd)}** · all people and amounts are fictitious")
-        except Exception as e:  # database not reachable yet
-            st.error(f"The database is not reachable: {e}")
+        except Exception as e:  # database not reachable yet (the details are in the app logs)
+            st.error(f"The demo database is not reachable right now ({e}). If the demo was idle for a while it may be "
+                     "waking up: reload the page in a minute.", icon=":material/cloud_off:")
             st.stop()
     with right:
         with st.container(border=True):

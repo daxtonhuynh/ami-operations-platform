@@ -1,0 +1,53 @@
+name: Keep demo awake
+# Free hosting pauses idle demos: Supabase pauses a free project after about a week of low database activity, and
+# Streamlit Community Cloud puts an app to sleep after 12 hours without visitors. Every 8 hours this job runs one query
+# against the demo database and opens the app (pressing its wake-up button if it is asleep).
+# Turned on by the same repository variable as the weekly reset: DEMO_RESET_ENABLED = true.
+# Needs the secret SUPABASE_DB_URL; the app step runs when the variable DEMO_APP_URL is set.
+on:
+  schedule:
+    - cron: "41 */8 * * *"
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-24.04
+    if: ${{ vars.DEMO_RESET_ENABLED == 'true' }}
+    timeout-minutes: 10
+    steps:
+      - name: Query the demo database
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          command -v psql >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client; }
+          psql "$SUPABASE_DB_URL" -Atc "select 'Demo database up, business date ' || ref.as_of_date()"
+
+      - name: Open the app and wake it if it is asleep
+        if: ${{ vars.DEMO_APP_URL != '' }}
+        env:
+          APP_URL: ${{ vars.DEMO_APP_URL }}
+        run: |
+          pip install --quiet playwright==1.55.0
+          python -m playwright install --with-deps chromium >/dev/null
+          python - <<'PY'
+          import os
+          from playwright.sync_api import sync_playwright
+
+          url = os.environ["APP_URL"]
+          try:
+              with sync_playwright() as p:
+                  browser = p.chromium.launch()
+                  page = browser.new_page()
+                  page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                  page.wait_for_timeout(10_000)
+                  wake = page.get_by_role("button", name="Yes, get this app back up!")
+                  if wake.count():
+                      wake.first.click()
+                      print(f"{url} was asleep: wake-up requested")
+                      page.wait_for_timeout(60_000)
+                  else:
+                      print(f"{url} is awake")
+                  browser.close()
+          except Exception as e:  # never fail the job because of the app page
+              print(f"Could not open {url}: {e}")
+          PY

@@ -23,7 +23,17 @@ HEADER
 pg_dump -d "$DB" --data-only --no-owner --no-privileges --no-comments $(printf -- '-n %s ' "${SCHEMAS[@]}") \
   | grep -v '^SET transaction_timeout' \
   | sed -e '/^-- Dumped from/d' -e '/^-- Dumped by/d'
+# Refresh planner statistics for the AMI tables only (a bare ANALYZE also visits system catalogs, which a hosted
+# database's owner may not analyze, and prints a warning for each).
 cat <<'FOOTER'
 SET session_replication_role = DEFAULT;
-ANALYZE;
+DO $$
+DECLARE t text;
+BEGIN
+  FOR t IN SELECT format('%I.%I', schemaname, tablename) FROM pg_tables
+           WHERE schemaname IN ('ref','crm','academic','billing','hr','payroll','finance','ctl','app')
+  LOOP
+    EXECUTE 'ANALYZE ' || t;
+  END LOOP;
+END $$;
 FOOTER
