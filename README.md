@@ -15,7 +15,7 @@ This repository is **phase 2 of the AMI Operational System**: it takes that syst
 
 | Layer | What it is | Start here |
 |---|---|---|
-| **1. The workbooks** | The Excel system as it ran, sanitised | [`workbooks/`](workbooks), [module docs](#module-documentation) |
+| **1. The workbooks** | The Excel system as it ran, sanitised |[module docs](#module-documentation) |
 | **2. The relational model** | The same business logic in PostgreSQL: 93 tables, the rules as constraints, triggers and functions, 21 operational controls, 70 business-rule tests | [`database/`](database) |
 | **3. The application** | A Streamlit web app on that database where each role works in its own workspace, with a year of simulated operations to explore | [`streamlit_app.py`](streamlit_app.py), [`ami/`](ami), [`seed/`](seed) |
 
