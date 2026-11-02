@@ -178,18 +178,6 @@ flowchart LR
 
 ---
 
-### Workbooks
-
-| # | Workbook | Function | Key sheets |
-|---|---|---|---|
-| 01 | [`01_Customer_Management_Database.xlsx`](workbooks/01_Customer_Management_Database.xlsx) | Sales CRM, enrolment and billing, receipts | `Customer Management Database`, `Qualified Leads`, `Receipts Management`, `Receipt` |
-| 02 | [`02_Learning_Course_Management.xlsx`](workbooks/02_Learning_Course_Management.xlsx) | Course administration | `Khoá học khai giảng` (class register), one roster sheet per class |
-| 03 | [`03_Monthly_Payslip_Apr_2025.xlsx`](workbooks/03_Monthly_Payslip_Apr_2025.xlsx) | Payroll (one month) | `Working Schedule_Apr 2025`, `Pipeline`, `Bảng lương_Breakdown`, `Bảng lương`, one payslip per employee |
-| 04 | [`04_Payment_Control.xlsx`](workbooks/04_Payment_Control.xlsx) | Expense vouchers and reimbursement | `Payment Management`, `Expense Reimbursement Form` |
-| 05 | [`05_Profit_and_Loss.xlsx`](workbooks/05_Profit_and_Loss.xlsx) | Chart of accounts, expenses, revenue recognition, P&L | `Expenses Management`, `Receipt Control`, `Profit and Loss_Cashflow`, `Profit and Loss_Accrual`, `Deferred Revenue Balance` |
-
-The working language of the original system was Vietnamese, so sheet names and column headers are in Vietnamese. Each module document below includes an English glossary.
-
 ### Module documentation
 
 1. [Sales: CRM, enrolment and billing](docs/01-sales-crm.md)
